@@ -15,12 +15,12 @@ function App() {
   const [title, setTitle] = useState('')
 
   const loadNotes = async () => {
-    const res = await fetch('http://localhost:8000/notes')
+    const res = await fetch('http://localhost:7000/notes')
     setNotes(await res.json())
   }
 
   const loadNote = async (note) => {
-    const res = await fetch(`http://localhost:8000/notes/${note.id}`)
+    const res = await fetch(`http://localhost:7000/notes/${note.id}`)
     const data = await res.json()
     setSelected(data)
     setTitle(data.title)
@@ -29,7 +29,7 @@ function App() {
 
   const saveNote = async () => {
     if (!selected) return
-    await fetch(`http://localhost:8000/notes/${selected.id}?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`, { method: 'PUT' })
+    await fetch(`http://localhost:7000/notes/${selected.id}?title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`, { method: 'PUT' })
     loadNotes()
   }
 

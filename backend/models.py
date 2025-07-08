@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from database import Base
 
 class Note(Base):
     __tablename__ = "notes"

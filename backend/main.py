@@ -1,12 +1,21 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from sqlalchemy.orm import Session
 
-from . import models, crud
-from .database import SessionLocal, engine, Base
+import crud
+from database import SessionLocal, engine, Base
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():
@@ -18,7 +27,9 @@ def get_db():
 
 
 @app.post("/notes")
-def create_note(title: str, content: str, folder: str = "", db: Session = Depends(get_db)):
+def create_note(
+    title: str, content: str, folder: str = "", db: Session = Depends(get_db)
+):
     return crud.create_note(db, title=title, content=content, folder=folder)
 
 
@@ -36,7 +47,13 @@ def read_note(note_id: str, db: Session = Depends(get_db)):
 
 
 @app.put("/notes/{note_id}")
-def update_note(note_id: str, title: str, content: str, folder: str = "", db: Session = Depends(get_db)):
+def update_note(
+    note_id: str,
+    title: str,
+    content: str,
+    folder: str = "",
+    db: Session = Depends(get_db),
+):
     note = crud.update_note(db, note_id, title, content, folder)
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
